@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TransportCompany.Api.Data;
 using TransportCompany.Api.DTOs.Vehicles;
 using TransportCompany.Api.Entities;
+using TransportCompany.Api.Entities.Enums;
 
 namespace TransportCompany.Api.Controllers
 {
@@ -82,6 +83,19 @@ namespace TransportCompany.Api.Controllers
             db.Vehicles.Remove(vehicle);
             await db.SaveChangesAsync(ct);
             return NoContent();
+        }
+
+        [HttpGet("available")]
+        public async Task<ActionResult<IEnumerable<VehicleDto>>> GetAvailable(CancellationToken ct)
+        {
+            var vehicles = await db.Vehicles
+                .AsNoTracking()
+                .Where(v => v.Status == VehicleStatus.Available)
+                .OrderBy(v => v.Id)
+                .Select(VehicleMappings.ToDto)
+                .ToListAsync(ct);
+
+            return Ok(vehicles);
         }
 
 
