@@ -17,7 +17,7 @@ namespace TransportCompany.Api.Controllers
             var clients = await db.Clients
                 .AsNoTracking()
                 .OrderBy(c => c.Id)
-                .Select(c => new ClientDto(c.Id, c.FullName, c.Phone, c.Email, c.CreatedAt, c.Orders.Count))
+                .Select(ClientMappings.ToDto)
                 .ToListAsync(ct);
 
             return Ok(clients);
@@ -29,7 +29,7 @@ namespace TransportCompany.Api.Controllers
             var client = await db.Clients
                 .AsNoTracking()
                 .Where(c => c.Id == id)
-                .Select(c => new ClientDto(c.Id, c.FullName, c.Phone, c.Email, c.CreatedAt, c.Orders.Count))
+                .Select(ClientMappings.ToDto)
                 .FirstOrDefaultAsync(ct);
 
             return client is null ? NotFound() : Ok(client);
@@ -43,7 +43,7 @@ namespace TransportCompany.Api.Controllers
             db.Clients.Add(client);
             await db.SaveChangesAsync(ct);
 
-            var result = new ClientDto(client.Id, client.FullName, client.Phone, client.Email, client.CreatedAt, 0);
+            var result = ClientMappings.ToDtoFunc(client);
             return CreatedAtAction(nameof(GetById), new { id = client.Id }, result);
         }
 
