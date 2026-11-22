@@ -9,6 +9,8 @@ namespace TransportCompany.Api.DTOs.Vehicles
         string PlateNumber,
         [Required, MaxLength(50)]
         string Brand,
+        [Range(0, 5_000_000)] 
+        int MileageKm,
         [Required, MaxLength(50)]
         string Model,
         [Range(typeof(decimal), "1", "60000", ErrorMessage = "Вантажопідйомність має бути від 1 до 60000 кг")]

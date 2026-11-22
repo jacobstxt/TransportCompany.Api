@@ -7,6 +7,7 @@ namespace TransportCompany.Api.DTOs.Vehicles
        int Id,
        string PlateNumber,
        string Brand,
+       int MileageKm,
        decimal CapacityKg,
        VehicleStatus Status,
        int TripsCount

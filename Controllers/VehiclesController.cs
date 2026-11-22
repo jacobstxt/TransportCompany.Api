@@ -41,7 +41,7 @@ namespace TransportCompany.Api.Controllers
             if (await db.Vehicles.AnyAsync(v => v.PlateNumber == dto.PlateNumber, ct))
                 return Conflict($"Авто з номером {dto.PlateNumber} вже існує.");
 
-            var vehicle = new Vehicle { PlateNumber = dto.PlateNumber, Brand = dto.Brand, Model = dto.Model, CapacityKg = dto.CapacityKg };
+            var vehicle = new Vehicle { PlateNumber = dto.PlateNumber, Brand = dto.Brand, Model = dto.Model,MileageKm = dto.MileageKm, CapacityKg = dto.CapacityKg };
 
             db.Vehicles.Add(vehicle);
             await db.SaveChangesAsync(ct);
@@ -63,6 +63,7 @@ namespace TransportCompany.Api.Controllers
             vehicle.PlateNumber = dto.PlateNumber;
             vehicle.Brand = dto.Brand;
             vehicle.Model = dto.Model;
+            vehicle.MileageKm = dto.MileageKm;
             vehicle.CapacityKg = dto.CapacityKg;
             vehicle.Status = dto.Status;
 

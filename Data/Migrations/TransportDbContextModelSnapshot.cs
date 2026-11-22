@@ -250,6 +250,9 @@ namespace TransportCompany.Api.Data.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("numeric(10,2)");
 
+                    b.Property<int>("MileageKm")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(50)

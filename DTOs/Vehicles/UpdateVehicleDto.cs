@@ -12,6 +12,8 @@ namespace TransportCompany.Api.DTOs.Vehicles
         string Brand,
         [Required, MaxLength(50)]
         string Model,
+        [Range(0, 5_000_000)] 
+        int MileageKm,
         [Range(typeof(decimal), "1", "60000", ErrorMessage = "Вантажопідйомність має бути від 1 до 60000 кг")]
         decimal CapacityKg,
         [EnumDataType(typeof(VehicleStatus))]

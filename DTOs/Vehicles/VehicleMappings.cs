@@ -7,7 +7,7 @@ namespace TransportCompany.Api.DTOs.Vehicles;
 public static class VehicleMappings
 {
     public static readonly Expression<Func<Vehicle, VehicleDto>> ToDto =
-        v => new VehicleDto(v.Id, v.PlateNumber, v.Brand, v.CapacityKg, v.Status, v.Trips.Count);
+        v => new VehicleDto(v.Id, v.PlateNumber, v.Brand, v.MileageKm, v.CapacityKg, v.Status, v.Trips.Count);
 
     public static readonly Func<Vehicle, VehicleDto> ToDtoFunc = ToDto.Compile();
 
