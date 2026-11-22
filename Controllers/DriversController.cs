@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TransportCompany.Api.Data;
 using TransportCompany.Api.DTOs.Drivers;
+using TransportCompany.Api.DTOs.Trips;
 using TransportCompany.Api.Entities;
 
 namespace TransportCompany.Api.Controllers
@@ -82,7 +83,6 @@ namespace TransportCompany.Api.Controllers
             return NoContent();
         }
 
-        // GET /api/drivers/5/vehicles: до яких авто допущений водій
         [HttpGet("{driverId:int}/vehicles")]
         public async Task<ActionResult<IEnumerable<DriverVehicleDto>>> GetVehicles(int driverId, CancellationToken ct)
         {
@@ -100,7 +100,6 @@ namespace TransportCompany.Api.Controllers
             return Ok(vehicles);
         }
 
-        // POST /api/drivers/5/vehicles/2: допустити водія до авто
         [HttpPost("{driverId:int}/vehicles/{vehicleId:int}")]
         public async Task<IActionResult> AssignVehicle(int driverId, int vehicleId, CancellationToken ct)
         {
@@ -116,7 +115,6 @@ namespace TransportCompany.Api.Controllers
             return NoContent();
         }
 
-        // DELETE /api/drivers/5/vehicles/2: зняти допуск
         [HttpDelete("{driverId:int}/vehicles/{vehicleId:int}")]
         public async Task<IActionResult> UnassignVehicle(int driverId, int vehicleId, CancellationToken ct)
         {
@@ -126,6 +124,22 @@ namespace TransportCompany.Api.Controllers
             db.DriverVehicles.Remove(link);
             await db.SaveChangesAsync(ct);
             return NoContent();
+        }
+
+        [HttpGet("{driverId:int}/trips")]
+        public async Task<ActionResult<IEnumerable<TripDto>>> GetTrips(int driverId, CancellationToken ct)
+        {
+            if (!await db.Drivers.AnyAsync(d => d.Id == driverId, ct))
+                return NotFound();
+
+            var trips = await db.TripDetails
+                .AsNoTracking()
+                .Where(t => t.DriverId == driverId)
+                .OrderByDescending(t => t.PlannedDeparture)
+                .Select(TripMappings.ToDto)
+                .ToListAsync(ct);
+
+            return Ok(trips);
         }
     }
 }

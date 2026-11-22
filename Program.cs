@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json.Serialization;
 using TransportCompany.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -12,13 +12,19 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<TransportDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<TransportDbContext>();
+    await db.Database.MigrateAsync();
+    await DbSeeder.SeedAsync(db);
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
